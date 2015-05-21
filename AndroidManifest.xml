@@ -22,6 +22,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity 
+            android:name=".AddItem"
+            android:label="@string/add_item_text" >
+        </activity>
     </application>
 
 </manifest>
