@@ -3,11 +3,15 @@ package com.thevarunshah.simplebucketlist;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -15,7 +19,7 @@ import android.widget.ListView;
 import com.thevarunshah.classes.BucketItem;
 
 
-public class BucketListView extends Activity implements OnClickListener{
+public class BucketListView extends Activity implements OnClickListener, OnItemLongClickListener{
 	
 	private final String TAG = "BucketListView";
 	
@@ -32,6 +36,8 @@ public class BucketListView extends Activity implements OnClickListener{
         listView = (ListView) findViewById(R.id.listview);
         adapter = new ArrayAdapter<BucketItem>(this, android.R.layout.simple_list_item_1, bucketList);
         listView.setAdapter(adapter);
+        
+        listView.setOnItemLongClickListener(this);
         
         Button addItem = (Button) findViewById(R.id.add_item);
         addItem.setOnClickListener(this);
@@ -59,6 +65,28 @@ public class BucketListView extends Activity implements OnClickListener{
 			bucketList.add(goal);
 			adapter.notifyDataSetChanged();
 		}
+	}
+
+	@Override
+	public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+		
+		Log.i(TAG, "long pressed goal");
+		Log.i(TAG, bucketList.get(position).toString());
+		new AlertDialog.Builder(this)
+			.setIconAttribute(android.R.attr.alertDialogIcon)
+			.setTitle("Confirm Delete")
+			.setMessage("Are you sure you want to delete this goal?")
+			.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					bucketList.remove(position);
+					adapter.notifyDataSetChanged();
+				}
+			})
+			.setNegativeButton("No", null)
+			.show();
+		
+		return true;
 	}
     
     /*
