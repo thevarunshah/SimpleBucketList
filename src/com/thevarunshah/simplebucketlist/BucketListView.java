@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.thevarunshah.classes.BucketAdapter;
 import com.thevarunshah.classes.BucketItem;
 
 
@@ -26,6 +27,7 @@ public class BucketListView extends Activity implements OnClickListener, OnItemL
 	private final ArrayList<BucketItem> bucketList = new ArrayList<BucketItem>();
 	
 	private ListView listView;
+	private BucketAdapter listAdapter = null;
 	private ArrayAdapter<BucketItem> adapter;
 
     @Override
@@ -34,8 +36,9 @@ public class BucketListView extends Activity implements OnClickListener, OnItemL
         setContentView(R.layout.bucket_list_view);
         
         listView = (ListView) findViewById(R.id.listview);
-        adapter = new ArrayAdapter<BucketItem>(this, android.R.layout.simple_list_item_1, bucketList);
-        listView.setAdapter(adapter);
+        //adapter = new ArrayAdapter<BucketItem>(this, android.R.layout.simple_list_item_1, bucketList);
+        listAdapter = new BucketAdapter(this, R.layout.row, bucketList);
+        listView.setAdapter(listAdapter);
         
         listView.setOnItemLongClickListener(this);
         
@@ -63,15 +66,15 @@ public class BucketListView extends Activity implements OnClickListener, OnItemL
 			Log.i(TAG, goal.getGoal());
 			
 			bucketList.add(goal);
-			adapter.notifyDataSetChanged();
+			listAdapter.notifyDataSetChanged();
 		}
 	}
 
 	@Override
 	public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
 		
-		Log.i(TAG, "long pressed goal");
-		Log.i(TAG, bucketList.get(position).toString());
+		Log.i(TAG, "long pressed " + bucketList.get(position).toString());
+		
 		new AlertDialog.Builder(this)
 			.setIconAttribute(android.R.attr.alertDialogIcon)
 			.setTitle("Confirm Delete")
@@ -80,7 +83,7 @@ public class BucketListView extends Activity implements OnClickListener, OnItemL
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					bucketList.remove(position);
-					adapter.notifyDataSetChanged();
+					listAdapter.notifyDataSetChanged();
 				}
 			})
 			.setNegativeButton("No", null)
