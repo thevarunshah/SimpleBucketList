@@ -27,7 +27,8 @@
         </activity>
         <activity 
             android:name=".AddItem"
-            android:label="@string/add_item_text" >
+            android:label="@string/add_item_text"
+            android:windowSoftInputMode="stateAlwaysVisible" >
         </activity>
     </application>
 
