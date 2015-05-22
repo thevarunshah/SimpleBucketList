@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -37,7 +36,7 @@ public class BucketListView extends Activity implements OnClickListener, OnItemL
 	
 	private ListView listView;
 	private BucketAdapter listAdapter = null;
-	private ArrayAdapter<BucketItem> adapter;
+	//private ArrayAdapter<BucketItem> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +79,7 @@ public class BucketListView extends Activity implements OnClickListener, OnItemL
 	}
 
 	@Override
-	public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+	public boolean onItemLongClick(final AdapterView<?> parent, View view, final int position, long id) {
 		
 		Log.i(TAG, "long pressed " + bucketList.get(position).toString());
 		
@@ -91,14 +90,16 @@ public class BucketListView extends Activity implements OnClickListener, OnItemL
 			.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					bucketList.remove(position);
-					listAdapter.notifyDataSetChanged();
+					listAdapter.remove((BucketItem)parent.getItemAtPosition(position));
+		            listAdapter.notifyDataSetChanged();
+					//bucketList.remove(position);
+					//listAdapter.notifyDataSetChanged();
 				}
 			})
 			.setNegativeButton("No", null)
 			.show();
 		
-		return true;
+		return false;
 	}
 	
 	@Override
