@@ -1,6 +1,10 @@
 package com.thevarunshah.classes;
 
-public class BucketItem {
+import java.io.Serializable;
+
+public class BucketItem implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	
 	private String goal = "";
 	private boolean done;

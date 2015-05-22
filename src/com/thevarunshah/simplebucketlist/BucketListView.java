@@ -1,5 +1,12 @@
 package com.thevarunshah.simplebucketlist;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -20,8 +27,10 @@ import com.thevarunshah.classes.BucketAdapter;
 import com.thevarunshah.classes.BucketItem;
 
 
-public class BucketListView extends Activity implements OnClickListener, OnItemLongClickListener{
+public class BucketListView extends Activity implements OnClickListener, OnItemLongClickListener, Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
 	private final String TAG = "BucketListView";
 	
 	private final ArrayList<BucketItem> bucketList = new ArrayList<BucketItem>();
@@ -90,6 +99,57 @@ public class BucketListView extends Activity implements OnClickListener, OnItemL
 			.show();
 		
 		return true;
+	}
+	
+	@Override
+	protected void onPause(){
+		
+		super.onPause();
+		
+		try {
+			Log.i(TAG, "writing to file");
+			writeData(this.bucketList);
+		} catch (IOException e) {
+			Log.i(TAG, "could not write to file");
+			Log.i(TAG, "Exception: " + e);
+		}
+	}
+	
+	@Override
+	protected void onResume(){
+		
+		super.onResume();
+		
+		try {
+			if(bucketList.isEmpty()){
+				Log.i(TAG, "reading from file");
+				this.bucketList.clear();
+				this.bucketList.addAll(readData());
+			}
+		} catch (Exception e) {
+			Log.i(TAG, "could not read file");
+			Log.i(TAG, "Exception: " + e);
+		}
+	}
+	
+	public static void writeData(ArrayList<BucketItem> bucketList) throws IOException {
+		
+		File file = new File(android.os.Environment.getExternalStorageDirectory() + "/bucket_list.ser");
+		file.createNewFile();
+		
+		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
+		oos.writeObject(bucketList);
+		oos.close();
+	}
+	
+	public static ArrayList<BucketItem> readData() throws IOException, ClassNotFoundException {
+		
+		File file = new File(android.os.Environment.getExternalStorageDirectory() + "/bucket_list.ser");
+		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
+		
+		ArrayList<BucketItem> list = (ArrayList<BucketItem>) ois.readObject();
+		ois.close();
+		return list;
 	}
     
     /*
