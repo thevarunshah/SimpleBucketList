@@ -4,11 +4,16 @@ import java.io.Serializable;
 
 public class BucketItem implements Serializable{
 	
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L; //for serializing data
 	
-	private String goal = "";
-	private boolean done;
+	private String goal = ""; //the goal
+	private boolean done; //boolean indicating if goal is done
 	
+	/**
+	 * creates a new undone bucket list item
+	 * 
+	 * @param goal the goal
+	 */
 	public BucketItem(String goal){
 		this.goal = goal;
 		this.done = false;

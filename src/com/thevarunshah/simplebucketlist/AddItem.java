@@ -11,13 +11,15 @@ import android.widget.EditText;
 
 public class AddItem extends Activity implements OnClickListener{
 	
-	private final String TAG = "AddItem";
+	private static final String TAG = "AddItem"; //for debugging purposes
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
+		
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_item);
         
+        //obtain button and attach press listener to it
         Button addItem = (Button) findViewById(R.id.add_item);
         addItem.setOnClickListener(this);
     }
@@ -25,12 +27,16 @@ public class AddItem extends Activity implements OnClickListener{
     @Override
 	public void onClick(View v) {
 
-    	Log.i(TAG, "clicked add button");
+    	Log.i(TAG, "finished entering goal");
+    	
+    	//edittext object of the goal entered
     	EditText text = (EditText) findViewById(R.id.item_text);
-    	//Toast.makeText(getApplicationContext(), text.getText().toString(), Toast.LENGTH_SHORT).show();
-
+    	
+    	//create new intent to put the goal in
     	Intent data = new Intent();
     	data.putExtra("text", text.getText().toString());
+    	
+    	//attach data to return call and go back to main view
     	setResult(RESULT_OK, data);
     	finish();
 	}

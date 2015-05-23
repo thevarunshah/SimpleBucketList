@@ -28,28 +28,30 @@ import com.thevarunshah.classes.BucketItem;
 
 public class BucketListView extends Activity implements OnClickListener, OnItemLongClickListener, Serializable{
 	
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L; //for serializing data
 
-	private final String TAG = "BucketListView";
+	private static final String TAG = "BucketListView"; //for debugging purposes
 	
-	private final ArrayList<BucketItem> bucketList = new ArrayList<BucketItem>();
+	private final ArrayList<BucketItem> bucketList = new ArrayList<BucketItem>(); //list of goals
 	
-	private ListView listView;
-	private BucketAdapter listAdapter = null;
-	//private ArrayAdapter<BucketItem> adapter;
+	private ListView listView = null; //main view of goals
+	private BucketAdapter listAdapter = null; //adapter for goals display
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+    	
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bucket_list_view);
         
+        //obtain list view and create new bucket list custom adapter
         listView = (ListView) findViewById(R.id.listview);
-        //adapter = new ArrayAdapter<BucketItem>(this, android.R.layout.simple_list_item_1, bucketList);
         listAdapter = new BucketAdapter(this, R.layout.row, bucketList);
-        listView.setAdapter(listAdapter);
         
+        //attach adapter and long press listener to list view
+        listView.setAdapter(listAdapter);
         listView.setOnItemLongClickListener(this);
         
+        //obtain add button and attach press listener to it
         Button addItem = (Button) findViewById(R.id.add_item);
         addItem.setOnClickListener(this);
     }
@@ -57,9 +59,9 @@ public class BucketListView extends Activity implements OnClickListener, OnItemL
     @Override
 	public void onClick(View v) {
 
-    	//Toast.makeText(getApplicationContext(), "clicked on add button", Toast.LENGTH_SHORT).show();
-    	Log.i(TAG, "clicked add button");
+    	Log.i(TAG, "pressed add button");
     	
+    	//start add item activity and wait for result (in onActivityResult(...))
     	Intent i = new Intent(BucketListView.this, AddItem.class);
     	startActivityForResult(i, 0);
 	}
@@ -67,12 +69,13 @@ public class BucketListView extends Activity implements OnClickListener, OnItemL
     @Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-		Log.i(TAG, "adding new item");
-
 		if(resultCode == RESULT_OK && requestCode == 0){
-			BucketItem goal = new BucketItem(data.getStringExtra("text"));
-			Log.i(TAG, goal.getGoal());
+
+			Log.i(TAG, "adding new goal");
 			
+			BucketItem goal = new BucketItem(data.getStringExtra("text")); //create new goal
+			
+			//add goal to main list and update view
 			bucketList.add(goal);
 			listAdapter.notifyDataSetChanged();
 		}
@@ -83,6 +86,7 @@ public class BucketListView extends Activity implements OnClickListener, OnItemL
 		
 		Log.i(TAG, "long pressed " + bucketList.get(position).toString());
 		
+		//confirm delete
 		new AlertDialog.Builder(this)
 			.setIconAttribute(android.R.attr.alertDialogIcon)
 			.setTitle("Confirm Delete")
@@ -90,10 +94,10 @@ public class BucketListView extends Activity implements OnClickListener, OnItemL
 			.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
+					
+					//remove goal from adapter and update view
 					listAdapter.remove((BucketItem)parent.getItemAtPosition(position));
 		            listAdapter.notifyDataSetChanged();
-					//bucketList.remove(position);
-					//listAdapter.notifyDataSetChanged();
 				}
 			})
 			.setNegativeButton("No", null)
@@ -107,6 +111,7 @@ public class BucketListView extends Activity implements OnClickListener, OnItemL
 		
 		super.onPause();
 		
+		//backup data
 		try {
 			Log.i(TAG, "writing to file");
 			writeData(this.bucketList);
@@ -121,6 +126,7 @@ public class BucketListView extends Activity implements OnClickListener, OnItemL
 		
 		super.onResume();
 		
+		//read data from backup
 		try {
 			if(bucketList.isEmpty()){
 				Log.i(TAG, "reading from file");
@@ -128,21 +134,36 @@ public class BucketListView extends Activity implements OnClickListener, OnItemL
 				this.bucketList.addAll(readData());
 			}
 		} catch (Exception e) {
-			Log.i(TAG, "could not read file");
+			Log.i(TAG, "could not read from file");
 			Log.i(TAG, "Exception: " + e);
 		}
 	}
 	
+	/**
+	 * creates a new file in SD card and writes to it
+	 * 
+	 * @param bucketList object which is written to file
+	 * @throws IOException
+	 */
 	public static void writeData(ArrayList<BucketItem> bucketList) throws IOException {
 		
+		//obtain file and create if not there
 		File file = new File(android.os.Environment.getExternalStorageDirectory() + "/bucket_list.ser");
 		file.createNewFile();
 		
+		//write to file
 		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
 		oos.writeObject(bucketList);
 		oos.close();
 	}
 	
+	/**
+	 * reads from file in SD card
+	 * 
+	 * @return object which holds the backup data
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
 	public static ArrayList<BucketItem> readData() throws IOException, ClassNotFoundException {
 		
 		File file = new File(android.os.Environment.getExternalStorageDirectory() + "/bucket_list.ser");
@@ -152,25 +173,4 @@ public class BucketListView extends Activity implements OnClickListener, OnItemL
 		ois.close();
 		return list;
 	}
-    
-    /*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.bucket_list_view, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    */
 }
