@@ -169,6 +169,7 @@ public class BucketListView extends Activity implements OnClickListener, OnItemL
 		File file = new File(android.os.Environment.getExternalStorageDirectory() + "/bucket_list.ser");
 		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<BucketItem> list = (ArrayList<BucketItem>) ois.readObject();
 		ois.close();
 		return list;

@@ -23,6 +23,7 @@
         android:layout_toRightOf="@+id/row_check"
         android:layout_alignBaseline="@+id/row_check"
         android:layout_alignBottom="@+id/row_check"
-        android:text="@string/text_hint" />
+        android:text="@string/text_hint"
+        android:textSize="18sp" />
 
 </RelativeLayout>
