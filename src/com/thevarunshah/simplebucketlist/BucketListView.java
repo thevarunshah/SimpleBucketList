@@ -49,7 +49,7 @@ public class BucketListView extends Activity implements OnClickListener, OnItemL
         
         //attach adapter and long press listener to list view
         listView.setAdapter(listAdapter);
-        listView.setOnItemLongClickListener(this);
+        //listView.setOnItemLongClickListener(this);
         
         //obtain add button and attach press listener to it
         Button addItem = (Button) findViewById(R.id.add_item);
@@ -103,7 +103,7 @@ public class BucketListView extends Activity implements OnClickListener, OnItemL
 			.setNegativeButton("No", null)
 			.show();
 		
-		return false;
+		return true;
 	}
 	
 	@Override

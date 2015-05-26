@@ -2,22 +2,31 @@ package com.thevarunshah.classes;
 
 import java.util.ArrayList;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Paint;
+import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.thevarunshah.simplebucketlist.R;
 
 public class BucketAdapter extends ArrayAdapter<BucketItem> {
+	
+	private final static String TAG = "BucketAdapter"; //for debugging purposes
 
 	private ArrayList<BucketItem> bucketList; //the list the adapter manages
 	private Context context; //context attached to adapter
@@ -36,6 +45,7 @@ public class BucketAdapter extends ArrayAdapter<BucketItem> {
 		TextView goal;
 	}
 
+	@SuppressLint("InflateParams") 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 
@@ -86,6 +96,73 @@ public class BucketAdapter extends ArrayAdapter<BucketItem> {
 				if(cb.isChecked()){
 					Toast.makeText(v.getContext(), "Good Job!", Toast.LENGTH_SHORT).show(); //tell them good job
 				}
+			}
+		});
+		
+		//attach a press listener to goal for editing
+		holder.goal.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				
+				TextView tv = (TextView) v;
+				Log.i(TAG, "clicked on " + tv.getText());
+				
+				final BucketItem item = (BucketItem) getItem(position); //get clicked item
+				
+				final EditText input = new EditText(context);
+				input.setInputType(InputType.TYPE_CLASS_TEXT);
+				input.setText(tv.getText());
+				
+				//prompt edit
+				new AlertDialog.Builder(context)
+					.setIconAttribute(android.R.drawable.ic_dialog_info)
+					.setTitle("Edit Goal")
+					.setView(input)
+					.setPositiveButton("Save", new DialogInterface.OnClickListener(){
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							
+							BucketItem updatedItem = new BucketItem(input.getText().toString());
+							updatedItem.setDone(item.isDone());
+							bucketList.remove(item);
+							bucketList.add(position, updatedItem);
+							notifyDataSetChanged();
+						}
+					})
+					.setNegativeButton("Cancel", null)
+					.show();
+			}
+		});
+		
+		//attach a long press listener to goal for deleteing
+		holder.goal.setOnLongClickListener(new OnLongClickListener() {
+			
+			@Override
+			public boolean onLongClick(View v) {
+				
+				Log.i(TAG, "long pressed " + ((TextView)v).getText());
+				
+				final BucketItem item = (BucketItem) getItem(position); //get clicked item
+				
+				//confirm delete
+				new AlertDialog.Builder(context)
+					.setIconAttribute(android.R.attr.alertDialogIcon)
+					.setTitle("Confirm Delete")
+					.setMessage("Are you sure you want to delete this goal?")
+					.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							
+							//remove goal from adapter and update view
+							bucketList.remove(item);
+							notifyDataSetChanged();
+						}
+					})
+					.setNegativeButton("No", null)
+					.show();
+				
+				return true;
 			}
 		});
 
