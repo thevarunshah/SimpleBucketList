@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -115,7 +116,8 @@ public class BucketAdapter extends ArrayAdapter<BucketItem> {
 				input.setText(tv.getText());
 				
 				//prompt edit
-				new AlertDialog.Builder(context)
+				AlertDialog.Builder editAlert = new AlertDialog.Builder(context);
+				editAlert
 					.setIconAttribute(android.R.drawable.ic_dialog_info)
 					.setTitle("Edit Goal")
 					.setView(input)
@@ -130,8 +132,10 @@ public class BucketAdapter extends ArrayAdapter<BucketItem> {
 							notifyDataSetChanged();
 						}
 					})
-					.setNegativeButton("Cancel", null)
-					.show();
+					.setNegativeButton("Cancel", null);
+				AlertDialog editDialog = editAlert.create();
+				editDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+				editDialog.show();
 			}
 		});
 		
