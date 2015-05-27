@@ -118,7 +118,7 @@ public class BucketAdapter extends ArrayAdapter<BucketItem> {
 				//prompt edit
 				AlertDialog.Builder editAlert = new AlertDialog.Builder(context);
 				editAlert
-					.setIconAttribute(android.R.drawable.ic_dialog_info)
+					.setIcon(android.R.drawable.ic_menu_info_details)
 					.setTitle("Edit Goal")
 					.setView(input)
 					.setPositiveButton("Save", new DialogInterface.OnClickListener(){
