@@ -10,15 +10,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -26,7 +22,7 @@ import com.thevarunshah.classes.BucketAdapter;
 import com.thevarunshah.classes.BucketItem;
 
 
-public class BucketListView extends Activity implements OnClickListener, OnItemLongClickListener, Serializable{
+public class BucketListView extends Activity implements OnClickListener, Serializable{
 	
 	private static final long serialVersionUID = 1L; //for serializing data
 
@@ -47,9 +43,8 @@ public class BucketListView extends Activity implements OnClickListener, OnItemL
         listView = (ListView) findViewById(R.id.listview);
         listAdapter = new BucketAdapter(this, R.layout.row, bucketList);
         
-        //attach adapter and long press listener to list view
+        //attach adapter to list view
         listView.setAdapter(listAdapter);
-        //listView.setOnItemLongClickListener(this);
         
         //obtain add button and attach press listener to it
         Button addItem = (Button) findViewById(R.id.add_item);
@@ -79,31 +74,6 @@ public class BucketListView extends Activity implements OnClickListener, OnItemL
 			bucketList.add(goal);
 			listAdapter.notifyDataSetChanged();
 		}
-	}
-
-	@Override
-	public boolean onItemLongClick(final AdapterView<?> parent, View view, final int position, long id) {
-		
-		Log.i(TAG, "long pressed " + bucketList.get(position).toString());
-		
-		//confirm delete
-		new AlertDialog.Builder(this)
-			.setIconAttribute(android.R.attr.alertDialogIcon)
-			.setTitle("Confirm Delete")
-			.setMessage("Are you sure you want to delete this goal?")
-			.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					
-					//remove goal from adapter and update view
-					listAdapter.remove((BucketItem)parent.getItemAtPosition(position));
-		            listAdapter.notifyDataSetChanged();
-				}
-			})
-			.setNegativeButton("No", null)
-			.show();
-		
-		return true;
 	}
 	
 	@Override
@@ -145,7 +115,7 @@ public class BucketListView extends Activity implements OnClickListener, OnItemL
 	 * @param bucketList object which is written to file
 	 * @throws IOException
 	 */
-	public static void writeData(ArrayList<BucketItem> bucketList) throws IOException {
+	private static void writeData(ArrayList<BucketItem> bucketList) throws IOException {
 		
 		//obtain file and create if not there
 		File file = new File(android.os.Environment.getExternalStorageDirectory() + "/bucket_list.ser");
@@ -164,7 +134,7 @@ public class BucketListView extends Activity implements OnClickListener, OnItemL
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public static ArrayList<BucketItem> readData() throws IOException, ClassNotFoundException {
+	private static ArrayList<BucketItem> readData() throws IOException, ClassNotFoundException {
 		
 		File file = new File(android.os.Environment.getExternalStorageDirectory() + "/bucket_list.ser");
 		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));

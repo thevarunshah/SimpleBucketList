@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
@@ -20,6 +19,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +44,7 @@ public class BucketAdapter extends ArrayAdapter<BucketItem> {
 		
 		CheckBox done;
 		TextView goal;
+		ImageButton delete;
 	}
 
 	@SuppressLint("InflateParams") 
@@ -60,6 +61,7 @@ public class BucketAdapter extends ArrayAdapter<BucketItem> {
 			holder = new ViewHolder();
 			holder.goal = (TextView) convertView.findViewById(R.id.row_text);
 			holder.done = (CheckBox) convertView.findViewById(R.id.row_check);
+			holder.delete = (ImageButton) convertView.findViewById(R.id.row_delete);
 			convertView.setTag(holder);
 		} 
 		else{
@@ -139,13 +141,13 @@ public class BucketAdapter extends ArrayAdapter<BucketItem> {
 			}
 		});
 		
-		//attach a long press listener to goal for deleteing
-		holder.goal.setOnLongClickListener(new OnLongClickListener() {
+		//attach a press listener to the delete button
+		holder.delete.setOnClickListener(new OnClickListener() {
 			
 			@Override
-			public boolean onLongClick(View v) {
+			public void onClick(View v) {
 				
-				Log.i(TAG, "long pressed " + ((TextView)v).getText());
+				Log.i(TAG, "clicked on delete");
 				
 				final BucketItem item = (BucketItem) getItem(position); //get clicked item
 				
@@ -165,8 +167,6 @@ public class BucketAdapter extends ArrayAdapter<BucketItem> {
 					})
 					.setNegativeButton("No", null)
 					.show();
-				
-				return true;
 			}
 		});
 
