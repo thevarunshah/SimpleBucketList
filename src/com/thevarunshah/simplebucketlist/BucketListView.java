@@ -100,8 +100,9 @@ public class BucketListView extends Activity implements OnClickListener, Seriali
 		try {
 			if(bucketList.isEmpty()){
 				Log.i(TAG, "reading from file");
+				ArrayList<BucketItem> backup = readData();
 				this.bucketList.clear();
-				this.bucketList.addAll(readData());
+				this.bucketList.addAll(backup);
 			}
 		} catch (Exception e) {
 			Log.i(TAG, "could not read from file");
@@ -136,10 +137,12 @@ public class BucketListView extends Activity implements OnClickListener, Seriali
 	 */
 	private static ArrayList<BucketItem> readData() throws IOException, ClassNotFoundException {
 		
+		//obtain file
 		File file = new File(android.os.Environment.getExternalStorageDirectory() + "/bucket_list.ser");
 		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
 		
 		@SuppressWarnings("unchecked")
+		//read list from file
 		ArrayList<BucketItem> list = (ArrayList<BucketItem>) ois.readObject();
 		ois.close();
 		return list;

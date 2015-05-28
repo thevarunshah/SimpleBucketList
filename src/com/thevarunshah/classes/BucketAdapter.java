@@ -113,6 +113,7 @@ public class BucketAdapter extends ArrayAdapter<BucketItem> {
 				
 				final BucketItem item = (BucketItem) getItem(position); //get clicked item
 				
+				//set up edit text object
 				final EditText input = new EditText(context);
 				input.setInputType(InputType.TYPE_CLASS_TEXT);
 				input.setText(tv.getText());
