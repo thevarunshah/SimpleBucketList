@@ -15,7 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.thevarunshah.classes.BucketAdapter;
@@ -47,7 +47,7 @@ public class BucketListView extends Activity implements OnClickListener, Seriali
         listView.setAdapter(listAdapter);
         
         //obtain add button and attach press listener to it
-        Button addItem = (Button) findViewById(R.id.add_item);
+        ImageButton addItem = (ImageButton) findViewById(R.id.add_item);
         addItem.setOnClickListener(this);
     }
     
